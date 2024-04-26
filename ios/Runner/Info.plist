@@ -49,37 +49,33 @@
 		<false/>
 		<key>NSAppTransportSecurity</key>
 		<dict>
-    		<key>NSAllowsLocalNetworking</key>
-    		<true/>
+			<key>NSAllowsLocalNetworking</key>
+			<true/>
 		</dict>
 		<key>GIDClientID</key>
 		<string>267938829982-r9hak8ae6g8gb18n8l27kslj49a8m8m6.apps.googleusercontent.com</string>
 		<key>CFBundleURLTypes</key>
 		<array>
-		<dict>
-		<key>CFBundleTypeRole</key>
-		<string>Editor</string>
-		<key>CFBundleURLSchemes</key>
-		<array>
-			<string>com.googleusercontent.apps.267938829982-r9hak8ae6g8gb18n8l27kslj49a8m8m6</string>
-		</array>
-		</dict>
-		</array>
-
-		<key>CFBundleURLTypes</key>
-		<array>
-		<dict>
-		<key>CFBundleURLSchemes</key>
-		<array>
-			<string>968749091237136</string>
-		</array>
-		</dict>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>com.googleusercontent.apps.267938829982-r9hak8ae6g8gb18n8l27kslj49a8m8m6</string>
+					<string>fb784446977084715</string>
+				</array>
+			</dict>
 		</array>
 		<key>FacebookAppID</key>
-		<string>968749091237136</string>
+		<string>784446977084715</string>
 		<key>FacebookClientToken</key>
-		<string>0840d83af2ed734453e63ff868da4a0d</string>
+		<string>0c8e6d5acfebba33e85818d9c6c28795</string>
 		<key>FacebookDisplayName</key>
 		<string>NinjaFood</string>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+			<string>fbapi</string>
+			<string>fb-messenger-share-api</string>
+		</array>
 	</dict>
 </plist>

@@ -1,5 +1,5 @@
-import 'package:auth_flutter_with_firebase/auth/signup/SignUp.dart';
-import 'package:auth_flutter_with_firebase/components/ButtonGradient.dart';
+import 'package:auth_flutter_with_firebase/auth/sign_in/sign_in_view.dart';
+import 'package:auth_flutter_with_firebase/components/button_gradient.dart';
 import 'package:auth_flutter_with_firebase/helpers/Const.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
@@ -93,7 +93,7 @@ class _OnBoardingState extends State<OnBoarding> with TickerProviderStateMixin {
       const SizedBox(height: 30),
       ButtonGradient(
         textButton: "Next",
-        onPressed: () => {Get.to(() => SignUp())},
+        onPressed: () => {Get.to(() => const SignInView())},
         width: 157,
         height: 57,
       )

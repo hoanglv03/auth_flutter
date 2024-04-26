@@ -1,4 +1,4 @@
-import 'package:auth_flutter_with_firebase/auth/onboardings/OnBoarding.dart';
+import 'package:auth_flutter_with_firebase/auth/onboardings/onboarding.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';

@@ -8,6 +8,9 @@ class AppImage {
   static const logoApp = 'lib/assets/images/Logo.png';
   static const google = 'lib/assets/images/google.png';
   static const facebook = 'lib/assets/images/facebook.png';
+  static const lock = 'lib/assets/icons/lock.png';
+  static const message = 'lib/assets/icons/message.png';
+  static const profile = 'lib/assets/icons/profile.png';
 }
 
 class AppTextStyle {
@@ -26,6 +29,10 @@ class AppTextStyle {
     fontSize: 12,
     fontWeight: FontWeight.bold,
   );
+  static const listColorGradient = <Color>[
+    Color(0xff53E88B),
+    Color(0xff15BE77)
+  ];
   static const regular14 = TextStyle(
     color: Colors.black,
     fontSize: 14,
@@ -36,6 +43,11 @@ class AppTextStyle {
     fontWeight: FontWeight.w500,
   );
   final Shader linearGradient = const LinearGradient(
-    colors: <Color>[Color(0xff53E88B), Color(0xff15BE77)],
+    colors: listColorGradient,
   ).createShader(const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0));
+
+  static final linearText = TextStyle(
+      fontSize: 12,
+      fontWeight: FontWeight.bold,
+      foreground: Paint()..shader = AppTextStyle().linearGradient);
 }
