@@ -1,5 +1,9 @@
 import 'package:auth_flutter_with_firebase/auth/onboardings/onboarding.dart';
+import 'package:auth_flutter_with_firebase/auth/sign_in/sign_in_view.dart';
+import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_view.dart';
+import 'package:auth_flutter_with_firebase/helpers/Const.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
@@ -12,30 +16,56 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const ProviderScope(child: GetMaterialApp(home: MyApp())));
+  runApp(
+    ProviderScope(
+      child: GetMaterialApp(
+        initialRoute: '/',
+        builder: EasyLoading.init(),
+        getPages: [
+          GetPage(name: '/', page: () => const MyHomePage()),
+          GetPage(name: AppRouters.signIn, page: () => const SignInView()),
+          GetPage(name: AppRouters.signUp, page: () => const SignUp()),
+        ],
+      ),
+    ),
+  );
+  configLoading();
+}
+
+void configLoading() {
+  EasyLoading.instance
+    ..displayDuration = const Duration(milliseconds: 2000)
+    ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+    ..loadingStyle = EasyLoadingStyle.dark
+    ..indicatorSize = 45.0
+    ..radius = 10.0
+    ..progressColor = Colors.yellow
+    ..backgroundColor = Colors.green
+    ..indicatorColor = Colors.yellow
+    ..textColor = Colors.yellow
+    ..maskColor = Colors.blue.withOpacity(0.5)
+    ..userInteractions = true
+    ..toastPosition = EasyLoadingToastPosition.bottom
+    ..dismissOnTap = false;
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();

@@ -1,46 +1,39 @@
+import 'package:auth_flutter_with_firebase/auth/auth_provider.dart';
 import 'package:auth_flutter_with_firebase/components/button_gradient.dart';
 import 'package:auth_flutter_with_firebase/components/text_input.dart';
 import 'package:auth_flutter_with_firebase/helpers/Const.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SignUp extends StatefulWidget {
+class SignUp extends ConsumerStatefulWidget {
   const SignUp({super.key});
 
   @override
-  State<SignUp> createState() => _SignUpState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _SignUpState();
 }
 
-class _SignUpState extends State<SignUp> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  bool isKeepMeSignIn = false;
-  bool isEmail = false;
+class _SignUpState extends ConsumerState<SignUp> {
+  late TextEditingController _emailController;
+  late TextEditingController _passwordController;
+  late TextEditingController _nameController;
 
   @override
   void initState() {
     super.initState();
-  }
-
-  void handleKeepMeSignIn(bool? isCheck) {
-    setState(() {
-      isKeepMeSignIn = isCheck ?? false;
-    });
-  }
-
-  void handleEmail(bool? isCheck) {
-    setState(() {
-      isEmail = isCheck ?? false;
-    });
+    _emailController =
+        ref.read(authControllerProvider.notifier).getEmailControllerSignUp();
+    _passwordController =
+        ref.read(authControllerProvider.notifier).getPasswordControllerSignUp();
+    _nameController =
+        ref.read(authControllerProvider.notifier).getNameControllerSignUp();
   }
 
   @override
   Widget build(BuildContext context) {
+    bool keepMeSignIn = ref.watch(authControllerProvider);
+
+    print("keepMeSignIn $keepMeSignIn");
+
     return Scaffold(
       body: Container(
         color: Colors.white,
@@ -74,7 +67,7 @@ class _SignUpState extends State<SignUp> {
                       height: 40,
                     ),
                     TextInput(
-                      textController: _emailController,
+                      textController: _nameController,
                       hint: "Anamwp . . ",
                       iconLeft: Image.asset(AppImage.profile),
                     ),
@@ -82,7 +75,7 @@ class _SignUpState extends State<SignUp> {
                       height: 12,
                     ),
                     TextInput(
-                      textController: _passwordController,
+                      textController: _emailController,
                       hint: "Email",
                       iconLeft: Image.asset(AppImage.message),
                     ),
@@ -90,7 +83,7 @@ class _SignUpState extends State<SignUp> {
                       height: 12,
                     ),
                     TextInput(
-                      textController: _emailController,
+                      textController: _passwordController,
                       hint: "Password",
                       iconLeft: Image.asset(AppImage.lock),
                       isPassword: true,
@@ -101,9 +94,12 @@ class _SignUpState extends State<SignUp> {
                     ),
                     _checkBox(
                       title: "Keep Me Signed In",
-                      isChecked: isKeepMeSignIn,
+                      isChecked: keepMeSignIn,
                       onChange: (value) {
-                        handleKeepMeSignIn(value);
+                        ref
+                            .read(authControllerProvider.notifier)
+                            .handleKeepMeSignedIn(value);
+                        // setState(() {});
                       },
                     ),
                     const SizedBox(
@@ -111,9 +107,13 @@ class _SignUpState extends State<SignUp> {
                     ),
                     _checkBox(
                       title: "Email Me About Special Pricing",
-                      isChecked: isEmail,
+                      isChecked: ref
+                          .watch(authControllerProvider.notifier)
+                          .isSendEmail,
                       onChange: (value) {
-                        handleEmail(value);
+                        ref
+                            .read(authControllerProvider.notifier)
+                            .handleSendEmail(value);
                       },
                     ),
                     const SizedBox(
@@ -121,7 +121,11 @@ class _SignUpState extends State<SignUp> {
                     ),
                     ButtonGradient(
                       textButton: "Create Account",
-                      onPressed: () => {},
+                      onPressed: () => {
+                        ref
+                            .read(authControllerProvider.notifier)
+                            .signInWithEmailAndPassword()
+                      },
                       width: 175,
                       height: 57,
                     ),

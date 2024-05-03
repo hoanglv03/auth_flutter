@@ -93,7 +93,7 @@ class _OnBoardingState extends State<OnBoarding> with TickerProviderStateMixin {
       const SizedBox(height: 30),
       ButtonGradient(
         textButton: "Next",
-        onPressed: () => {Get.to(() => const SignInView())},
+        onPressed: () => {Get.toNamed(AppRouters.signIn)},
         width: 157,
         height: 57,
       )

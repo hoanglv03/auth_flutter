@@ -63,3 +63,8 @@ class AppTextStyle {
     decorationColor: const Color(0xff53E88B),
   );
 }
+
+class AppRouters {
+  static const signIn = '/sign_in';
+  static const signUp = '/sign_up';
+}

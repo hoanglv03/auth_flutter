@@ -20,12 +20,17 @@ class SignInView extends ConsumerStatefulWidget {
 }
 
 class _SignInViewState extends ConsumerState<SignInView> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  late TextEditingController _emailController;
+  late TextEditingController _passwordController;
 
   @override
   void initState() {
     super.initState();
+    _emailController =
+        ref.read(authControllerProvider.notifier).getEmailEditingController();
+    _passwordController = ref
+        .read(authControllerProvider.notifier)
+        .getPasswordEditingController();
   }
 
   @override
@@ -91,7 +96,7 @@ class _SignInViewState extends ConsumerState<SignInView> {
                               style: AppTextStyle.linearText,
                             ),
                             GestureDetector(
-                              onTap: () => Get.to(() => const SignUp()),
+                              onTap: () => Get.toNamed(AppRouters.signUp),
                               child: Text(
                                 'Sign Up?',
                                 style: AppTextStyle.linearText,
