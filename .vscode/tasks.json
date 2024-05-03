@@ -1,0 +1,16 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "models - build_runner build",
+            "type": "shell",
+            "command": "fvm flutter packages pub run build_runner build --delete-conflicting-outputs",
+            "group": "none",
+            "presentation": {
+              "reveal": "always",
+              "panel": "new"
+            },
+            
+          },
+    ]
+}

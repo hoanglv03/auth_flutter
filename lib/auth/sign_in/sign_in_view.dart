@@ -1,5 +1,4 @@
-import 'package:auth_flutter_with_firebase/auth/sign_in/sign_in_logic.dart';
-import 'package:auth_flutter_with_firebase/auth/sign_in/sign_in_state.dart';
+import 'package:auth_flutter_with_firebase/auth/auth_provider.dart';
 import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_view.dart';
 import 'package:auth_flutter_with_firebase/components/button_gradient.dart';
 import 'package:auth_flutter_with_firebase/components/text_input.dart';
@@ -8,21 +7,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
-class SignInView extends StatefulWidget {
+class SignInView extends ConsumerStatefulWidget {
   const SignInView({super.key});
 
   @override
-  State<SignInView> createState() => _SignInViewState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _SignInViewState();
 }
 
-class _SignInViewState extends State<SignInView> {
+class _SignInViewState extends ConsumerState<SignInView> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final SignUpLogic logic = Get.put(SignUpLogic());
 
   @override
   void initState() {
@@ -122,8 +121,8 @@ class _SignInViewState extends State<SignInView> {
       children: [
         Expanded(
           child: GestureDetector(
-            onTap: () async {
-              await logic.signInWithFacebook();
+            onTap: () {
+              ref.read(authControllerProvider.notifier).signInWithFacebook();
             },
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 16),
@@ -152,8 +151,8 @@ class _SignInViewState extends State<SignInView> {
         ),
         Expanded(
           child: GestureDetector(
-            onTap: () async {
-              await logic.signInWithGoogle();
+            onTap: () {
+              ref.read(authControllerProvider.notifier).signInWithGoogle();
             },
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 16),

@@ -29,6 +29,10 @@ class AppTextStyle {
     fontSize: 12,
     fontWeight: FontWeight.bold,
   );
+  static const regular14Gray = TextStyle(
+    color: Colors.black38,
+    fontSize: 14,
+  );
   static const listColorGradient = <Color>[
     Color(0xff53E88B),
     Color(0xff15BE77)
@@ -47,7 +51,15 @@ class AppTextStyle {
   ).createShader(const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0));
 
   static final linearText = TextStyle(
-      fontSize: 12,
-      fontWeight: FontWeight.bold,
-      foreground: Paint()..shader = AppTextStyle().linearGradient);
+    fontSize: 12,
+    fontWeight: FontWeight.bold,
+    foreground: Paint()..shader = AppTextStyle().linearGradient,
+  );
+  static final linearTextUnderline = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.bold,
+    foreground: Paint()..shader = AppTextStyle().linearGradient,
+    decoration: TextDecoration.underline,
+    decorationColor: const Color(0xff53E88B),
+  );
 }

@@ -1,12 +1,15 @@
-import 'package:auth_flutter_with_firebase/auth/sign_in/sign_in_state.dart';
+import 'package:auth_flutter_with_firebase/auth/entities/user_entities.dart';
 import 'package:auth_flutter_with_firebase/pages/home/home_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class SignUpLogic extends GetxController {
-  final state = SignUpState();
+class AuthControllerNotifier extends StateNotifier<UserEntities?> {
+  AuthControllerNotifier(this.ref) : super(null);
+
+  final Ref ref;
 
   Future<UserCredential> signInWithFacebook() async {
     final LoginResult result = await FacebookAuth.instance.login();
@@ -29,7 +32,6 @@ class SignUpLogic extends GetxController {
       // }
       if (value.user?.email != null) {
         Get.to(() => HomeView());
-        state.socialAccount.value = value;
       }
 
       return value;
@@ -54,8 +56,8 @@ class SignUpLogic extends GetxController {
         .signInWithCredential(credential)
         .then((value) {
       if (value.user?.email != null) {
+        // state.email = value.user?.email;
         Get.to(() => HomeView());
-        state.socialAccount.value = value;
       }
       return value;
     });

@@ -1,5 +1,3 @@
-import 'package:auth_flutter_with_firebase/auth/sign_in/sign_in_logic.dart';
-import 'package:auth_flutter_with_firebase/auth/sign_in/sign_in_state.dart';
 import 'package:auth_flutter_with_firebase/components/button_gradient.dart';
 import 'package:auth_flutter_with_firebase/components/text_input.dart';
 import 'package:auth_flutter_with_firebase/helpers/Const.dart';
@@ -21,11 +19,24 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final SignUpLogic logic = Get.put(SignUpLogic());
+  bool isKeepMeSignIn = false;
+  bool isEmail = false;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  void handleKeepMeSignIn(bool? isCheck) {
+    setState(() {
+      isKeepMeSignIn = isCheck ?? false;
+    });
+  }
+
+  void handleEmail(bool? isCheck) {
+    setState(() {
+      isEmail = isCheck ?? false;
+    });
   }
 
   @override
@@ -85,66 +96,42 @@ class _SignUpState extends State<SignUp> {
                       isPassword: true,
                       iconRight: const Icon(Icons.remove_red_eye),
                     ),
-                    Row(
-                      children: [
-                        Container(
-                          width: 22,
-                          height: 22,
-                          decoration: ShapeDecoration(
-                            gradient: const LinearGradient(
-                              begin: Alignment(0.99, -0.15),
-                              end: Alignment(-0.99, 0.15),
-                              colors: AppTextStyle.listColorGradient,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              side: const BorderSide(
-                                  width: 1, color: Color(0xFFF4F4F4)),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            shadows: const [
-                              BoxShadow(
-                                color: Color(0x115A6CEA),
-                                blurRadius: 50,
-                                offset: Offset(12, 26),
-                                spreadRadius: 0,
-                              )
-                            ],
-                          ),
-                          child: Checkbox(
-                            value: false,
-                            side: const BorderSide(color: Colors.transparent),
-                            fillColor:
-                                MaterialStateProperty.resolveWith((states) {
-                              if (states.contains(MaterialState.selected)) {
-                                return Colors.transparent;
-                              }
-                              return null;
-                            }),
-                            onChanged: (value) {},
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(vertical: 20),
-                          child: const Text(
-                            "Keep Me Signed In",
-                            style: AppTextStyle.bold12,
-                          ),
-                        ),
-                      ],
+                    const SizedBox(
+                      height: 20,
                     ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(vertical: 20),
-                      child: const Text(
-                        "Or Continue With",
-                        style: AppTextStyle.bold12,
-                      ),
+                    _checkBox(
+                      title: "Keep Me Signed In",
+                      isChecked: isKeepMeSignIn,
+                      onChange: (value) {
+                        handleKeepMeSignIn(value);
+                      },
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    _checkBox(
+                      title: "Email Me About Special Pricing",
+                      isChecked: isEmail,
+                      onChange: (value) {
+                        handleEmail(value);
+                      },
+                    ),
+                    const SizedBox(
+                      height: 40,
                     ),
                     ButtonGradient(
-                      textButton: "Login",
+                      textButton: "Create Account",
                       onPressed: () => {},
-                      width: 157,
+                      width: 175,
                       height: 57,
-                    )
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      'already have an account?',
+                      style: AppTextStyle.linearTextUnderline,
+                    ),
                   ],
                 ),
               ),
@@ -152,6 +139,68 @@ class _SignUpState extends State<SignUp> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _checkBox extends StatelessWidget {
+  const _checkBox({
+    super.key,
+    required this.title,
+    required this.isChecked,
+    required this.onChange,
+  });
+  final String title;
+  final bool isChecked;
+  final Function(bool?) onChange;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 22,
+          height: 22,
+          decoration: ShapeDecoration(
+            gradient: const LinearGradient(
+              begin: Alignment(0.99, -0.15),
+              end: Alignment(-0.99, 0.15),
+              colors: AppTextStyle.listColorGradient,
+            ),
+            shape: RoundedRectangleBorder(
+              side: const BorderSide(width: 1, color: Color(0xFFF4F4F4)),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            shadows: const [
+              BoxShadow(
+                color: Color(0x115A6CEA),
+                blurRadius: 50,
+                offset: Offset(12, 26),
+                spreadRadius: 0,
+              )
+            ],
+          ),
+          child: Checkbox(
+            value: isChecked,
+            side: const BorderSide(color: Colors.transparent),
+            fillColor: MaterialStateProperty.resolveWith((states) {
+              if (states.contains(MaterialState.selected)) {
+                return Colors.transparent;
+              }
+              return null;
+            }),
+            onChanged: (value) {
+              onChange(value);
+            },
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.only(left: 10),
+          child: Text(
+            title,
+            style: AppTextStyle.regular14Gray,
+          ),
+        ),
+      ],
     );
   }
 }
