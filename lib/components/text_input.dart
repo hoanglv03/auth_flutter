@@ -24,19 +24,20 @@ class TextInput extends StatelessWidget {
             obscureText: isPassword,
             controller: textController,
             decoration: InputDecoration(
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                disabledBorder: InputBorder.none,
-                contentPadding: const EdgeInsets.only(
-                    left: 15, bottom: 11, top: 11, right: 15),
-                hintText: hint,
-                hintStyle: const TextStyle(
-                  color: Color(0xFF3B3B3B),
-                ),
-                prefixIcon: iconLeft,
-                suffixIcon: iconRight),
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+              contentPadding: const EdgeInsets.only(
+                  left: 15, bottom: 11, top: 11, right: 15),
+              hintText: hint,
+              hintStyle: const TextStyle(
+                color: Color(0xFF3B3B3B),
+              ),
+              prefixIcon: iconLeft,
+              suffixIcon: iconRight,
+            ),
           )
         ],
       ),

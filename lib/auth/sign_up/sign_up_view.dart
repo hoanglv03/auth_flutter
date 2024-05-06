@@ -1,4 +1,7 @@
 import 'package:auth_flutter_with_firebase/auth/auth_provider.dart';
+import 'package:auth_flutter_with_firebase/auth/controllers/auth_email_me.dart';
+import 'package:auth_flutter_with_firebase/auth/controllers/auth_eye_password.dart';
+import 'package:auth_flutter_with_firebase/auth/controllers/auth_keep_me_sign_in.dart';
 import 'package:auth_flutter_with_firebase/components/button_gradient.dart';
 import 'package:auth_flutter_with_firebase/components/text_input.dart';
 import 'package:auth_flutter_with_firebase/helpers/Const.dart';
@@ -30,9 +33,9 @@ class _SignUpState extends ConsumerState<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    bool keepMeSignIn = ref.watch(authControllerProvider);
-
-    print("keepMeSignIn $keepMeSignIn");
+    bool keepMeSignIn = ref.watch(keepMeSignInControllerProvider);
+    bool emailMe = ref.watch(emailMeControllerProvider);
+    bool showPassword = ref.watch(eyePasswordControllerProvider);
 
     return Scaffold(
       body: Container(
@@ -86,8 +89,17 @@ class _SignUpState extends ConsumerState<SignUp> {
                       textController: _passwordController,
                       hint: "Password",
                       iconLeft: Image.asset(AppImage.lock),
-                      isPassword: true,
-                      iconRight: const Icon(Icons.remove_red_eye),
+                      isPassword: showPassword,
+                      iconRight: GestureDetector(
+                        onTap: () {
+                          ref
+                              .read(eyePasswordControllerProvider.notifier)
+                              .handle();
+                        },
+                        child: showPassword
+                            ? const Icon(Icons.visibility_off)
+                            : const Icon(Icons.remove_red_eye),
+                      ),
                     ),
                     const SizedBox(
                       height: 20,
@@ -97,9 +109,8 @@ class _SignUpState extends ConsumerState<SignUp> {
                       isChecked: keepMeSignIn,
                       onChange: (value) {
                         ref
-                            .read(authControllerProvider.notifier)
-                            .handleKeepMeSignedIn(value);
-                        // setState(() {});
+                            .read(keepMeSignInControllerProvider.notifier)
+                            .handle();
                       },
                     ),
                     const SizedBox(
@@ -107,13 +118,9 @@ class _SignUpState extends ConsumerState<SignUp> {
                     ),
                     _checkBox(
                       title: "Email Me About Special Pricing",
-                      isChecked: ref
-                          .watch(authControllerProvider.notifier)
-                          .isSendEmail,
+                      isChecked: emailMe,
                       onChange: (value) {
-                        ref
-                            .read(authControllerProvider.notifier)
-                            .handleSendEmail(value);
+                        ref.read(emailMeControllerProvider.notifier).handle();
                       },
                     ),
                     const SizedBox(

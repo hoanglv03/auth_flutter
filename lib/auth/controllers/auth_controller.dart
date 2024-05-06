@@ -1,4 +1,8 @@
+// ignore_for_file: invalid_return_type_for_catch_error
+import 'package:auth_flutter_with_firebase/auth/controllers/auth_email_me.dart';
+import 'package:auth_flutter_with_firebase/auth/controllers/auth_keep_me_sign_in.dart';
 import 'package:auth_flutter_with_firebase/auth/entities/user_entities.dart';
+import 'package:auth_flutter_with_firebase/helpers/Const.dart';
 import 'package:auth_flutter_with_firebase/pages/home/home_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
@@ -11,34 +15,23 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-class AuthControllerNotifier extends StateNotifier<bool> {
-  AuthControllerNotifier(this.ref) : super(false);
+class AuthControllerNotifier extends StateNotifier<UserEntities?> {
+  AuthControllerNotifier(this.ref) : super(null);
   final FirebaseDatabase database = FirebaseDatabase.instance;
   final Ref ref;
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _emailControllerSignUp = TextEditingController();
   final TextEditingController _passwordControllerSighUp =
       TextEditingController();
   final TextEditingController _nameControllerSignUp = TextEditingController();
-  bool isKeepMeSignedIn = false;
 
-  bool isSendEmail = false;
-
-  void handleKeepMeSignedIn(bool? value) {
-    if (value != isKeepMeSignedIn) {
-      state = value ?? false;
-      print(isKeepMeSignedIn);
-    }
-  }
-
-  void handleSendEmail(bool? value) {
-    isSendEmail = value ?? false;
-  }
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
 
   bool isPasswordCompliant(String password) {
-    if (password == null || password.isEmpty) {
+    if (password.isEmpty) {
       return false;
     }
 
@@ -70,6 +63,7 @@ class AuthControllerNotifier extends StateNotifier<bool> {
   }
 
   Future<void> signInWithEmailAndPassword() async {
+    EasyLoading.show(status: 'loading...');
     if (!validateFormSignUp()) {
       return;
     }
@@ -83,28 +77,34 @@ class AuthControllerNotifier extends StateNotifier<bool> {
           .then((value) async {
         String? uuid = value.user?.uid;
         if (uuid != null) {
-          final user = <String, dynamic>{
-            "uuid": uuid,
-            "username": _nameControllerSignUp.text,
-            "email": value.user!.email,
-            "is_active": false,
-            "first_name": "",
-            "last_name": "",
-            "phone_number": null,
-            "avatar_url": "",
-            "created_at": DateTime.now().millisecondsSinceEpoch,
-            "updated_at": "",
-            "deleted_at": "",
-            "send_email": isSendEmail
-          };
-          await db.collection("users").doc(uuid).set(user);
+          final UserEntities user = UserEntities(
+            avatarUrl: null,
+            uuid: uuid,
+            username: _nameControllerSignUp.text,
+            email: value.user!.email,
+            isActive: false,
+            firstName: "",
+            lastName: "",
+            createdAt: DateTime.now().millisecondsSinceEpoch,
+            phoneNumber: null,
+            updatedAt: null,
+            deletedAt: null,
+            emailMe: ref.read(emailMeControllerProvider),
+            keep_me_sign_in: ref.read(keepMeSignInControllerProvider),
+          );
+          await db.collection("users").doc(uuid).set(user.toJson()).then(
+                (value) => {
+                  EasyLoading.dismiss(),
+                  Get.toNamed(AppRouters.signUpProcess)
+                },
+              );
         }
-      });
+      }).catchError((e) => EasyLoading.showToast(e?.message));
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
+        EasyLoading.showToast('The password provided is too weak.');
       } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
+        EasyLoading.showToast('The account already exists for that email.');
       }
     } catch (e) {
       print(e);
@@ -164,12 +164,11 @@ class AuthControllerNotifier extends StateNotifier<bool> {
     });
   }
 
+  Future<void> updateProfile() async {
+    
+  }
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
-  }
-
-  bool getKeepMeSignedIn() {
-    return isKeepMeSignedIn;
   }
 
   TextEditingController getEmailControllerSignUp() {
@@ -190,5 +189,17 @@ class AuthControllerNotifier extends StateNotifier<bool> {
 
   TextEditingController getPasswordEditingController() {
     return _passwordController;
+  }
+
+  TextEditingController getFirstNameEditingController() {
+    return _firstNameController;
+  }
+
+  TextEditingController getLastNameEditingController() {
+    return _lastNameController;
+  }
+
+  TextEditingController getPhoneNumberEditingController() {
+    return _phoneNumberController;
   }
 }
