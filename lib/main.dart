@@ -1,6 +1,7 @@
 import 'package:auth_flutter_with_firebase/auth/onboardings/onboarding.dart';
 import 'package:auth_flutter_with_firebase/auth/sign_in/sign_in_view.dart';
 import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_process.dart';
+import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_set_location.dart';
 import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_upload_image.dart';
 import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_view.dart';
 import 'package:auth_flutter_with_firebase/helpers/Const.dart';
@@ -33,6 +34,9 @@ void main() async {
           GetPage(
               name: AppRouters.signUploadImage,
               page: () => const SignUpUploadImage()),
+          GetPage(
+              name: AppRouters.signUpSetLocation,
+              page: () => const SignUpSetLocation()),
         ],
       ),
     ),

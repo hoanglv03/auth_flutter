@@ -1,4 +1,5 @@
 // ignore_for_file: invalid_return_type_for_catch_error, body_might_complete_normally_catch_error
+import 'package:auth_flutter_with_firebase/auth/controllers/auth_avatar_url.dart';
 import 'package:auth_flutter_with_firebase/auth/controllers/auth_email_me.dart';
 import 'package:auth_flutter_with_firebase/auth/controllers/auth_keep_me_sign_in.dart';
 import 'package:auth_flutter_with_firebase/auth/entities/user_entities.dart';
@@ -8,6 +9,7 @@ import 'package:auth_flutter_with_firebase/pages/home/home_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -20,6 +22,9 @@ import 'package:image_picker/image_picker.dart';
 class AuthControllerNotifier extends StateNotifier<UserEntities?> {
   AuthControllerNotifier(this.ref) : super(null);
   final FirebaseDatabase database = FirebaseDatabase.instance;
+  final storage = FirebaseStorage.instance;
+  final FirebaseFirestore db = FirebaseFirestore.instance;
+
   final Ref ref;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -31,7 +36,6 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
-  final FirebaseFirestore db = FirebaseFirestore.instance;
 
   bool isPasswordCompliant(String password) {
     if (password.isEmpty) {
@@ -167,7 +171,6 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
 
   Future<void> updateProfile() async {
     EasyLoading.show(status: 'loading...');
-
     bool validateFormProcess() {
       String message = '';
       if (_firstNameController.text.isEmpty ||
@@ -208,18 +211,82 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
     }
   }
 
-  Future<void> getLostData() async {
+  Future<void> uploadImage() async {
     final ImagePicker picker = ImagePicker();
-    final LostDataResponse response = await picker.retrieveLostData();
-    if (response.isEmpty) {
-      return;
+    try {
+      final XFile? fileImage =
+          await picker.pickImage(source: ImageSource.gallery);
+
+      if (fileImage != null) {
+        UploadTask task = storage
+            .ref('upload/images/${fileImage.name}')
+            .putData(await fileImage.readAsBytes(),
+                SettableMetadata(contentType: "image/jpg"));
+
+        task.snapshotEvents.listen((TaskSnapshot taskSnapshot) async {
+          switch (taskSnapshot.state) {
+            case TaskState.running:
+              final progress =
+                  (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes);
+              if (!progress.isNaN) {
+                EasyLoading.showProgress(progress, status: 'uploading...');
+              }
+              break;
+
+            case TaskState.paused:
+              EasyLoading.showToast("Upload was pause");
+              break;
+
+            case TaskState.canceled:
+              EasyLoading.showToast("Upload was canceled");
+              break;
+
+            case TaskState.error:
+              EasyLoading.showError('Failed with Error');
+              break;
+
+            case TaskState.success:
+              EasyLoading.showSuccess('Upload Successfully!');
+              String avatarURl = await taskSnapshot.ref.getDownloadURL();
+              ref.read(updateAvatarUrlProvider.notifier).updateUrl(avatarURl);
+              break;
+          }
+        });
+      }
+    } catch (e) {
+      print(e);
     }
-    final List<XFile>? files = response.files;
-    if (files != null) {
-      print(files);
-    } else {
-      print(response.exception);
+    EasyLoading.dismiss();
+  }
+
+  Future<void> handleUploadImage() async {
+    EasyLoading.show(status: 'loading...');
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      String? url = ref.read(updateAvatarUrlProvider);
+
+      if (user != null && url != null) {
+        await db.collection("users").doc(user.uid).update({
+          "avatar_url": url,
+        }).then((value) {
+          EasyLoading.showToast('Update profile successfully');
+          Get.toNamed(AppRouters.signUpSetLocation);
+        }).catchError((e) {
+          EasyLoading.showError('Failed with Error');
+        });
+      }
+    } catch (e) {
+      print(e);
     }
+  }
+
+  Future<void> getCurrentLocation() async {
+    try {
+      String? currentAddress = await Helper.getAddressCurrentLocation();
+      if(currentAddress != null){
+        
+      }
+    } catch (e) {}
   }
 
   Future<void> signOut() async {

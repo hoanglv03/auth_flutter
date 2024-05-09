@@ -13,6 +13,7 @@ class AppImage {
   static const profile = 'lib/assets/icons/profile.png';
   static const camera = 'lib/assets/icons/camera.png';
   static const gallery = 'lib/assets/icons/gallery.png';
+  static const pin = 'lib/assets/icons/pin.png';
 }
 
 class AppTextStyle {
@@ -32,6 +33,11 @@ class AppTextStyle {
     fontWeight: FontWeight.bold,
   );
   static const bold14 = TextStyle(
+    color: Colors.black,
+    fontSize: 14,
+    fontWeight: FontWeight.bold,
+  );
+  static const bold15 = TextStyle(
     color: Colors.black,
     fontSize: 14,
     fontWeight: FontWeight.bold,
@@ -82,11 +88,14 @@ class AppRouters {
   static const signUp = '/sign_up';
   static const signUpProcess = '/sign_up_process';
   static const signUploadImage = '/sign_up_upload_image';
+  static const signUpSetLocation = '/sign_up_set_location';
 }
 
 class AppColors {
   static const buttonBackgroundArrow = Color.fromARGB(66, 249, 169, 77);
   static const buttonArrow = Color(0xffDA6317);
+  static const white80 = Color(0xffFEFEFF);
+  static final Color white50 = white80.withOpacity(0.5);
 }
 
 class AppAuthText {
@@ -102,4 +111,7 @@ class AppAuthText {
   static const fromGallery = "From Gallery";
   static const takePhoto = "Take Photo";
   static const uploadPhoto = "Upload Your Photo\nProfile";
+  static const setLocation = "Set Your Location";
+  static const yourLocation = "Your Location";
+  static const setLocationButton = "Set Location";
 }

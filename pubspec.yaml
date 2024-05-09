@@ -49,6 +49,9 @@ dependencies:
   flutter_easyloading: ^3.0.5
   email_validator: ^2.1.17
   image_picker: ^1.1.1
+  firebase_storage: ^11.7.5
+  geolocator: ^11.0.0
+  geocoding: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -89,6 +92,7 @@ flutter:
     - lib/assets/icons/profile.png
     - lib/assets/icons/camera.png
     - lib/assets/icons/gallery.png
+    - lib/assets/icons/pin.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
