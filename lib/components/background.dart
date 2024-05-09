@@ -5,9 +5,11 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 class Background extends StatelessWidget {
-  const Background({super.key, required this.child, this.viewBottom});
+  const Background(
+      {super.key, required this.child, this.viewBottom, required this.onTab});
   final Widget child;
   final Widget? viewBottom;
+  final Function onTab;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -35,21 +37,24 @@ class Background extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 45,
-                    height: 45,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: AppColors.buttonBackgroundArrow,
-                    ),
-                    margin: const EdgeInsets.only(
-                      left: 25,
-                    ),
-                    padding: const EdgeInsets.only(left: 10),
-                    child: const Center(
-                      child: Icon(
-                        Icons.arrow_back_ios,
-                        color: AppColors.buttonArrow,
+                  GestureDetector(
+                    onTap: () => {onTab()},
+                    child: Container(
+                      width: 45,
+                      height: 45,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: AppColors.buttonBackgroundArrow,
+                      ),
+                      margin: const EdgeInsets.only(
+                        left: 25,
+                      ),
+                      padding: const EdgeInsets.only(left: 10),
+                      child: const Center(
+                        child: Icon(
+                          Icons.arrow_back_ios,
+                          color: AppColors.buttonArrow,
+                        ),
                       ),
                     ),
                   ),

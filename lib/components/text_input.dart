@@ -7,12 +7,14 @@ class TextInput extends StatelessWidget {
       this.hint,
       this.iconLeft,
       this.isPassword = false,
-      this.iconRight});
+      this.iconRight,
+      this.type});
   final TextEditingController? textController;
   final String? hint;
   final Widget? iconLeft;
   final bool isPassword;
   final Widget? iconRight;
+  final TextInputType? type;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,6 +25,7 @@ class TextInput extends StatelessWidget {
           TextField(
             obscureText: isPassword,
             controller: textController,
+            keyboardType: type,
             decoration: InputDecoration(
               border: InputBorder.none,
               focusedBorder: InputBorder.none,

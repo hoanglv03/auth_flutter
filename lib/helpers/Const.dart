@@ -11,6 +11,8 @@ class AppImage {
   static const lock = 'lib/assets/icons/lock.png';
   static const message = 'lib/assets/icons/message.png';
   static const profile = 'lib/assets/icons/profile.png';
+  static const camera = 'lib/assets/icons/camera.png';
+  static const gallery = 'lib/assets/icons/gallery.png';
 }
 
 class AppTextStyle {
@@ -27,6 +29,11 @@ class AppTextStyle {
   static const bold12 = TextStyle(
     color: Colors.black,
     fontSize: 12,
+    fontWeight: FontWeight.bold,
+  );
+  static const bold14 = TextStyle(
+    color: Colors.black,
+    fontSize: 14,
     fontWeight: FontWeight.bold,
   );
   static const regular14Gray = TextStyle(
@@ -74,6 +81,7 @@ class AppRouters {
   static const signIn = '/sign_in';
   static const signUp = '/sign_up';
   static const signUpProcess = '/sign_up_process';
+  static const signUploadImage = '/sign_up_upload_image';
 }
 
 class AppColors {
@@ -91,4 +99,7 @@ class AppAuthText {
   static const password = "Password";
   static const phoneNumber = "Phone Number";
   static const next = "Next";
+  static const fromGallery = "From Gallery";
+  static const takePhoto = "Take Photo";
+  static const uploadPhoto = "Upload Your Photo\nProfile";
 }

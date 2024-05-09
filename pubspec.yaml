@@ -48,6 +48,7 @@ dependencies:
   cloud_firestore: ^4.17.2
   flutter_easyloading: ^3.0.5
   email_validator: ^2.1.17
+  image_picker: ^1.1.1
 
 dev_dependencies:
   flutter_test:
@@ -86,6 +87,8 @@ flutter:
     - lib/assets/icons/lock.png
     - lib/assets/icons/message.png
     - lib/assets/icons/profile.png
+    - lib/assets/icons/camera.png
+    - lib/assets/icons/gallery.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -1,6 +1,7 @@
 import 'package:auth_flutter_with_firebase/auth/auth_provider.dart';
 import 'package:auth_flutter_with_firebase/components/background.dart';
 import 'package:auth_flutter_with_firebase/components/button_gradient.dart';
+import 'package:auth_flutter_with_firebase/components/button_image.dart';
 import 'package:auth_flutter_with_firebase/components/text_input.dart';
 import 'package:auth_flutter_with_firebase/helpers/Const.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,30 +10,18 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 
-class SignUpProcess extends ConsumerStatefulWidget {
-  const SignUpProcess({super.key});
+class SignUpUploadImage extends ConsumerStatefulWidget {
+  const SignUpUploadImage({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _SignUpProcessState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _SignUpUploadImageState();
 }
 
-class _SignUpProcessState extends ConsumerState<SignUpProcess> {
-  late TextEditingController _firstNameController;
-  late TextEditingController _lastNameController;
-  late TextEditingController _phoneNumberController;
-
+class _SignUpUploadImageState extends ConsumerState<SignUpUploadImage> {
   @override
   void initState() {
     super.initState();
-    _firstNameController = ref
-        .read(authControllerProvider.notifier)
-        .getFirstNameEditingController();
-    _lastNameController = ref
-        .read(authControllerProvider.notifier)
-        .getLastNameEditingController();
-    _phoneNumberController = ref
-        .read(authControllerProvider.notifier)
-        .getPhoneNumberEditingController();
   }
 
   @override
@@ -56,7 +45,7 @@ class _SignUpProcessState extends ConsumerState<SignUpProcess> {
           mainAxisSize: MainAxisSize.max,
           children: [
             const Text(
-              AppAuthText.signUpProcessTitle,
+              AppAuthText.uploadPhoto,
               style: AppTextStyle.bold25,
             ),
             const SizedBox(height: 19),
@@ -65,21 +54,19 @@ class _SignUpProcessState extends ConsumerState<SignUpProcess> {
               style: AppTextStyle.regular12,
             ),
             const SizedBox(height: 20),
-            TextInput(
-              textController: _firstNameController,
-              hint: AppAuthText.firstName,
+            ButtonImage(
+              onPressed: () {
+                ref.read(authControllerProvider.notifier).getLostData();
+              },
+              textButton: AppAuthText.fromGallery,
+              images: AppImage.gallery,
             ),
             const SizedBox(height: 20),
-            TextInput(
-              textController: _lastNameController,
-              hint: AppAuthText.lastName,
-            ),
-            const SizedBox(height: 20),
-            TextInput(
-              textController: _phoneNumberController,
-              hint: AppAuthText.phoneNumber,
-              type: TextInputType.number,
-            ),
+            ButtonImage(
+              onPressed: () {},
+              textButton: AppAuthText.takePhoto,
+              images: AppImage.camera,
+            )
           ],
         ),
       ),

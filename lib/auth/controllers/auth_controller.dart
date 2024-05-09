@@ -1,8 +1,9 @@
-// ignore_for_file: invalid_return_type_for_catch_error
+// ignore_for_file: invalid_return_type_for_catch_error, body_might_complete_normally_catch_error
 import 'package:auth_flutter_with_firebase/auth/controllers/auth_email_me.dart';
 import 'package:auth_flutter_with_firebase/auth/controllers/auth_keep_me_sign_in.dart';
 import 'package:auth_flutter_with_firebase/auth/entities/user_entities.dart';
 import 'package:auth_flutter_with_firebase/helpers/Const.dart';
+import 'package:auth_flutter_with_firebase/helpers/helper.dart';
 import 'package:auth_flutter_with_firebase/pages/home/home_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AuthControllerNotifier extends StateNotifier<UserEntities?> {
   AuthControllerNotifier(this.ref) : super(null);
@@ -29,12 +31,12 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+  final FirebaseFirestore db = FirebaseFirestore.instance;
 
   bool isPasswordCompliant(String password) {
     if (password.isEmpty) {
       return false;
     }
-
     bool hasUppercase = password.contains(RegExp(r'[A-Z]'));
     bool hasDigits = password.contains(RegExp(r'[0-9]'));
     bool hasLowercase = password.contains(RegExp(r'[a-z]'));
@@ -67,7 +69,6 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
     if (!validateFormSignUp()) {
       return;
     }
-    FirebaseFirestore db = FirebaseFirestore.instance;
     try {
       return FirebaseAuth.instance
           .createUserWithEmailAndPassword(
@@ -165,8 +166,62 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
   }
 
   Future<void> updateProfile() async {
-    
+    EasyLoading.show(status: 'loading...');
+
+    bool validateFormProcess() {
+      String message = '';
+      if (_firstNameController.text.isEmpty ||
+          _lastNameController.text.isEmpty ||
+          _phoneNumberController.text.isEmpty) {
+        message = "Please fill all fields";
+      } else if (Helper.checkPhoneNumber(_phoneNumberController.text)) {
+        message = "Phone number is valid";
+      }
+      if (message.isNotEmpty) {
+        EasyLoading.showToast(message);
+      }
+      return true;
+    }
+
+    if (!validateFormProcess()) {
+      return;
+    }
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await db.collection("users").doc(user.uid).update({
+          "first_name": _firstNameController.text,
+          "last_name": _lastNameController.text,
+          "phone_number": _phoneNumberController.text,
+        }).then((value) {
+          EasyLoading.showToast("Updated profile successfully");
+          Get.toNamed(AppRouters.signUploadImage);
+        }).catchError((e) {
+          if (e.code == 'not-found') {
+            EasyLoading.showToast("user was not found");
+          }
+        });
+        EasyLoading.dismiss();
+      }
+    } catch (e) {
+      print(e);
+    }
   }
+
+  Future<void> getLostData() async {
+    final ImagePicker picker = ImagePicker();
+    final LostDataResponse response = await picker.retrieveLostData();
+    if (response.isEmpty) {
+      return;
+    }
+    final List<XFile>? files = response.files;
+    if (files != null) {
+      print(files);
+    } else {
+      print(response.exception);
+    }
+  }
+
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
   }
