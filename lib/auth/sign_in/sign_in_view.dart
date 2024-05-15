@@ -1,16 +1,11 @@
 import 'package:auth_flutter_with_firebase/auth/auth_provider.dart';
-import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_view.dart';
 import 'package:auth_flutter_with_firebase/components/button_gradient.dart';
 import 'package:auth_flutter_with_firebase/components/text_input.dart';
 import 'package:auth_flutter_with_firebase/helpers/Const.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class SignInView extends ConsumerStatefulWidget {
   const SignInView({super.key});
@@ -96,7 +91,7 @@ class _SignInViewState extends ConsumerState<SignInView> {
                               style: AppTextStyle.linearText,
                             ),
                             GestureDetector(
-                              onTap: () => Get.toNamed(AppRouters.signUp),
+                              onTap: () => Get.offAllNamed(AppRouters.signUp),
                               child: Text(
                                 'Sign Up?',
                                 style: AppTextStyle.linearText,

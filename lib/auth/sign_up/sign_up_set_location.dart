@@ -1,4 +1,5 @@
 import 'package:auth_flutter_with_firebase/auth/auth_provider.dart';
+import 'package:auth_flutter_with_firebase/auth/controllers/auth_set_location.dart';
 import 'package:auth_flutter_with_firebase/components/background.dart';
 import 'package:auth_flutter_with_firebase/components/button_gradient.dart';
 import 'package:auth_flutter_with_firebase/helpers/Const.dart';
@@ -25,6 +26,7 @@ class _SignUpSetLocationState extends ConsumerState<SignUpSetLocation> {
 
   @override
   Widget build(BuildContext context) {
+    String? address = ref.watch(setLocationProvider);
     return Background(
       onTab: () => {Get.back()},
       viewBottom: Container(
@@ -32,7 +34,7 @@ class _SignUpSetLocationState extends ConsumerState<SignUpSetLocation> {
         child: ButtonGradient(
           textButton: AppAuthText.next,
           onPressed: () =>
-              {ref.read(authControllerProvider.notifier).handleUploadImage()},
+              {ref.read(authControllerProvider.notifier).handleSaveLocation()},
           width: 175,
           height: 57,
         ),
@@ -77,8 +79,8 @@ class _SignUpSetLocationState extends ConsumerState<SignUpSetLocation> {
                       children: [
                         Image.asset(AppImage.pin),
                         const SizedBox(width: 14),
-                        const Text(
-                          AppAuthText.yourLocation,
+                        Text(
+                          address ?? AppAuthText.yourLocation,
                           style: AppTextStyle.bold15,
                         )
                       ],
@@ -89,8 +91,10 @@ class _SignUpSetLocationState extends ConsumerState<SignUpSetLocation> {
                     margin: const EdgeInsets.symmetric(horizontal: 10),
                     height: 57,
                     child: ElevatedButton(
-                      onPressed: () async {
-                        Helper.getAddressCurrentLocation();
+                      onPressed: () {
+                        ref
+                            .read(authControllerProvider.notifier)
+                            .getCurrentLocation();
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.transparent,

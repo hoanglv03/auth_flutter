@@ -3,11 +3,8 @@ import 'package:auth_flutter_with_firebase/auth/controllers/auth_avatar_url.dart
 import 'package:auth_flutter_with_firebase/components/background.dart';
 import 'package:auth_flutter_with_firebase/components/button_gradient.dart';
 import 'package:auth_flutter_with_firebase/components/button_image.dart';
-import 'package:auth_flutter_with_firebase/components/text_input.dart';
 import 'package:auth_flutter_with_firebase/helpers/Const.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 

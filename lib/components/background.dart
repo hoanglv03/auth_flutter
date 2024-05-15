@@ -1,8 +1,5 @@
 import 'package:auth_flutter_with_firebase/helpers/Const.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
 
 class Background extends StatelessWidget {
   const Background(

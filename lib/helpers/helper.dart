@@ -1,5 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:get/get.dart';
 
 class Helper {
   static Function checkPhoneNumber = (String value) {
@@ -53,14 +54,10 @@ class Helper {
   }
 
   static Future<String?> getAddressCurrentLocation() async {
-    Position position = await determinePosition();
-    if (position != null) {
-      await placemarkFromCoordinates(position!.latitude, position!.longitude)
-          .then((List<Placemark> placemarks) {
-        Placemark place = placemarks[0];
-        return '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}';
-      });
-    }
-    return null;
+    Position value = await determinePosition();
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(value.latitude, value.longitude);
+    Placemark place = placemarks[0];
+    return '${place.street!.isNotEmpty ? "${place.street}," : ''} ${place.subLocality}, ${place.subAdministrativeArea}, ${place.administrativeArea}';
   }
 }

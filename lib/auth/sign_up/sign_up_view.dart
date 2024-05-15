@@ -7,6 +7,7 @@ import 'package:auth_flutter_with_firebase/components/text_input.dart';
 import 'package:auth_flutter_with_firebase/helpers/Const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
 
 class SignUp extends ConsumerStatefulWidget {
   const SignUp({super.key});
@@ -139,9 +140,12 @@ class _SignUpState extends ConsumerState<SignUp> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Text(
-                      'already have an account?',
-                      style: AppTextStyle.linearTextUnderline,
+                    GestureDetector(
+                      onTap: () => {Get.offAllNamed(AppRouters.signIn)},
+                      child: Text(
+                        'already have an account?',
+                        style: AppTextStyle.linearTextUnderline,
+                      ),
                     ),
                   ],
                 ),

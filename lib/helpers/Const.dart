@@ -14,6 +14,7 @@ class AppImage {
   static const camera = 'lib/assets/icons/camera.png';
   static const gallery = 'lib/assets/icons/gallery.png';
   static const pin = 'lib/assets/icons/pin.png';
+  static const icon_successfully = 'lib/assets/icons/icon_successfully.png';
 }
 
 class AppTextStyle {
@@ -50,6 +51,10 @@ class AppTextStyle {
     color: Colors.black,
     fontSize: 12,
   );
+  static final regularLiner12 = TextStyle(
+    fontSize: 12,
+    foreground: Paint()..shader = AppTextStyle().linearGradient,
+  );
   static const bold25 =
       TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.w700);
   static const listColorGradient = <Color>[
@@ -74,12 +79,22 @@ class AppTextStyle {
     fontWeight: FontWeight.bold,
     foreground: Paint()..shader = AppTextStyle().linearGradient,
   );
+  static final linearText30 = TextStyle(
+    fontSize: 30,
+    fontWeight: FontWeight.bold,
+    foreground: Paint()..shader = AppTextStyle().linearGradient,
+  );
   static final linearTextUnderline = TextStyle(
     fontSize: 12,
     fontWeight: FontWeight.bold,
     foreground: Paint()..shader = AppTextStyle().linearGradient,
     decoration: TextDecoration.underline,
     decorationColor: const Color(0xff53E88B),
+  );
+  static const bold23 = TextStyle(
+    color: Colors.black,
+    fontSize: 23,
+    fontWeight: FontWeight.bold,
   );
 }
 
@@ -89,6 +104,8 @@ class AppRouters {
   static const signUpProcess = '/sign_up_process';
   static const signUploadImage = '/sign_up_upload_image';
   static const signUpSetLocation = '/sign_up_set_location';
+  static const signUpVerifyCode = '/sign_up_verify_code';
+  static const signUpSuccessfully = '/sign_up_successfully';
 }
 
 class AppColors {
@@ -114,4 +131,11 @@ class AppAuthText {
   static const setLocation = "Set Your Location";
   static const yourLocation = "Your Location";
   static const setLocationButton = "Set Location";
+  static const verifyCode = "Enter 4-digit\nVerification code";
+  static const codeSend = "Code send to";
+  static const expired = "You not receive code?";
+  static const congrats = "Congrats!";
+  static const readyToUse = "Your Profile Is Ready To Use";
+  static const resendAfter = "Resend after";
+  static const resend = "Resend";
 }

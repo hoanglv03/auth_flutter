@@ -2,7 +2,9 @@ import 'package:auth_flutter_with_firebase/auth/onboardings/onboarding.dart';
 import 'package:auth_flutter_with_firebase/auth/sign_in/sign_in_view.dart';
 import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_process.dart';
 import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_set_location.dart';
+import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_successfully.dart';
 import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_upload_image.dart';
+import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_verify_code.dart';
 import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_view.dart';
 import 'package:auth_flutter_with_firebase/helpers/Const.dart';
 import 'package:flutter/material.dart';
@@ -37,6 +39,12 @@ void main() async {
           GetPage(
               name: AppRouters.signUpSetLocation,
               page: () => const SignUpSetLocation()),
+          GetPage(
+              name: AppRouters.signUpVerifyCode,
+              page: () => const SignUpVerifyCode()),
+          GetPage(
+              name: AppRouters.signUpSuccessfully,
+              page: () => const AuthSuccessfully()),
         ],
       ),
     ),

@@ -52,6 +52,7 @@ dependencies:
   firebase_storage: ^11.7.5
   geolocator: ^11.0.0
   geocoding: ^3.0.0
+  pin_code_fields: ^8.0.1
 
 dev_dependencies:
   flutter_test:
@@ -93,6 +94,7 @@ flutter:
     - lib/assets/icons/camera.png
     - lib/assets/icons/gallery.png
     - lib/assets/icons/pin.png
+    - lib/assets/icons/icon_successfully.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

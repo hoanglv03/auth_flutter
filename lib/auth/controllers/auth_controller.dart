@@ -2,7 +2,9 @@
 import 'package:auth_flutter_with_firebase/auth/controllers/auth_avatar_url.dart';
 import 'package:auth_flutter_with_firebase/auth/controllers/auth_email_me.dart';
 import 'package:auth_flutter_with_firebase/auth/controllers/auth_keep_me_sign_in.dart';
+import 'package:auth_flutter_with_firebase/auth/controllers/auth_set_location.dart';
 import 'package:auth_flutter_with_firebase/auth/entities/user_entities.dart';
+import 'package:auth_flutter_with_firebase/auth/enum/sign_up.dart';
 import 'package:auth_flutter_with_firebase/helpers/Const.dart';
 import 'package:auth_flutter_with_firebase/helpers/helper.dart';
 import 'package:auth_flutter_with_firebase/pages/home/home_view.dart';
@@ -15,6 +17,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:image_picker/image_picker.dart';
@@ -36,6 +39,10 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _codeVerify = TextEditingController();
+
+  String? phoneNumber;
+  late String _verificationId;
 
   bool isPasswordCompliant(String password) {
     if (password.isEmpty) {
@@ -88,14 +95,16 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
             username: _nameControllerSignUp.text,
             email: value.user!.email,
             isActive: false,
-            firstName: "",
-            lastName: "",
+            firstName: null,
+            lastName: null,
             createdAt: DateTime.now().millisecondsSinceEpoch,
             phoneNumber: null,
             updatedAt: null,
             deletedAt: null,
             emailMe: ref.read(emailMeControllerProvider),
             keep_me_sign_in: ref.read(keepMeSignInControllerProvider),
+            method_sign_in: MethodSignUp.email.name,
+            address: null,
           );
           await db.collection("users").doc(uuid).set(user.toJson()).then(
                 (value) => {
@@ -115,6 +124,8 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
       print(e);
     }
   }
+
+  Future<void> checkStepSignIn(String email, String password) async {}
 
   Future<UserCredential> signInWithFacebook() async {
     final LoginResult result = await FacebookAuth.instance.login();
@@ -182,6 +193,7 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
       }
       if (message.isNotEmpty) {
         EasyLoading.showToast(message);
+        return false;
       }
       return true;
     }
@@ -197,6 +209,7 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
           "last_name": _lastNameController.text,
           "phone_number": _phoneNumberController.text,
         }).then((value) {
+          phoneNumber = _phoneNumberController.text;
           EasyLoading.showToast("Updated profile successfully");
           Get.toNamed(AppRouters.signUploadImage);
         }).catchError((e) {
@@ -264,7 +277,6 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
     try {
       final user = FirebaseAuth.instance.currentUser;
       String? url = ref.read(updateAvatarUrlProvider);
-
       if (user != null && url != null) {
         await db.collection("users").doc(user.uid).update({
           "avatar_url": url,
@@ -283,10 +295,80 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
   Future<void> getCurrentLocation() async {
     try {
       String? currentAddress = await Helper.getAddressCurrentLocation();
-      if(currentAddress != null){
-        
+
+      if (currentAddress != null) {
+        ref.read(setLocationProvider.notifier).setLocation(currentAddress);
       }
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> handleSaveLocation() async {
+    EasyLoading.show(status: 'loading...');
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await db.collection("users").doc(user.uid).update({
+          "address": ref.read(setLocationProvider),
+        }).then((value) async {
+          EasyLoading.showToast("Updated location successfully");
+          await sendCode()
+              .then((value) => {Get.toNamed(AppRouters.signUpVerifyCode)});
+        }).catchError((e) {
+          if (e.code == 'not-found') {
+            EasyLoading.showToast("user was not found");
+          }
+        });
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> sendCode() async {
+    try {
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: phoneNumber?.replaceFirst("0", "+84"),
+        verificationCompleted: (PhoneAuthCredential credential) {},
+        verificationFailed: (FirebaseAuthException e) {
+          print(e);
+        },
+        codeSent: (String verificationId, int? resendToken) async {
+          _verificationId = verificationId;
+          Get.toNamed(AppRouters.signUpVerifyCode);
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {},
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> resendCode() async {
+    try {
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: phoneNumber?.replaceFirst("0", "+84"),
+        verificationCompleted: (PhoneAuthCredential credential) {},
+        verificationFailed: (FirebaseAuthException e) {
+          print(e);
+        },
+        codeSent: (String verificationId, int? resendToken) async {
+          _verificationId = verificationId;
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {},
+      );
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> verifyCode(String code) async {
+    if (code.length == 6) {
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: _verificationId, smsCode: code);
+      Get.toNamed(AppRouters.signUpSuccessfully);
+    }
   }
 
   Future<void> signOut() async {
@@ -323,5 +405,9 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
 
   TextEditingController getPhoneNumberEditingController() {
     return _phoneNumberController;
+  }
+
+  TextEditingController getCodeVerifyEditingController() {
+    return _codeVerify;
   }
 }

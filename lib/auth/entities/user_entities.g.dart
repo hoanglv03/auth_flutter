@@ -21,6 +21,8 @@ _$UserEntitiesImpl _$$UserEntitiesImplFromJson(Map<String, dynamic> json) =>
       deletedAt: (json['deleted_at'] as num?)?.toInt(),
       emailMe: json['email_me'] as bool?,
       keep_me_sign_in: json['keep_me_sign_in'] as bool?,
+      method_sign_in: json['method_sign_in'] as String?,
+      address: json['address'] as String?,
     );
 
 Map<String, dynamic> _$$UserEntitiesImplToJson(_$UserEntitiesImpl instance) =>
@@ -38,4 +40,6 @@ Map<String, dynamic> _$$UserEntitiesImplToJson(_$UserEntitiesImpl instance) =>
       'deleted_at': instance.deletedAt,
       'email_me': instance.emailMe,
       'keep_me_sign_in': instance.keep_me_sign_in,
+      'method_sign_in': instance.method_sign_in,
+      'address': instance.address,
     };

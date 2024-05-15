@@ -46,6 +46,10 @@ mixin _$UserEntities {
   bool? get emailMe => throw _privateConstructorUsedError;
   @JsonKey(name: 'keep_me_sign_in')
   bool? get keep_me_sign_in => throw _privateConstructorUsedError;
+  @JsonKey(name: 'method_sign_in')
+  String? get method_sign_in => throw _privateConstructorUsedError;
+  @JsonKey(name: 'address')
+  String? get address => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -72,7 +76,9 @@ abstract class $UserEntitiesCopyWith<$Res> {
       @JsonKey(name: 'updated_at') int? updatedAt,
       @JsonKey(name: 'deleted_at') int? deletedAt,
       @JsonKey(name: 'email_me') bool? emailMe,
-      @JsonKey(name: 'keep_me_sign_in') bool? keep_me_sign_in});
+      @JsonKey(name: 'keep_me_sign_in') bool? keep_me_sign_in,
+      @JsonKey(name: 'method_sign_in') String? method_sign_in,
+      @JsonKey(name: 'address') String? address});
 }
 
 /// @nodoc
@@ -101,6 +107,8 @@ class _$UserEntitiesCopyWithImpl<$Res, $Val extends UserEntities>
     Object? deletedAt = freezed,
     Object? emailMe = freezed,
     Object? keep_me_sign_in = freezed,
+    Object? method_sign_in = freezed,
+    Object? address = freezed,
   }) {
     return _then(_value.copyWith(
       uuid: freezed == uuid
@@ -155,6 +163,14 @@ class _$UserEntitiesCopyWithImpl<$Res, $Val extends UserEntities>
           ? _value.keep_me_sign_in
           : keep_me_sign_in // ignore: cast_nullable_to_non_nullable
               as bool?,
+      method_sign_in: freezed == method_sign_in
+          ? _value.method_sign_in
+          : method_sign_in // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -180,7 +196,9 @@ abstract class _$$UserEntitiesImplCopyWith<$Res>
       @JsonKey(name: 'updated_at') int? updatedAt,
       @JsonKey(name: 'deleted_at') int? deletedAt,
       @JsonKey(name: 'email_me') bool? emailMe,
-      @JsonKey(name: 'keep_me_sign_in') bool? keep_me_sign_in});
+      @JsonKey(name: 'keep_me_sign_in') bool? keep_me_sign_in,
+      @JsonKey(name: 'method_sign_in') String? method_sign_in,
+      @JsonKey(name: 'address') String? address});
 }
 
 /// @nodoc
@@ -207,6 +225,8 @@ class __$$UserEntitiesImplCopyWithImpl<$Res>
     Object? deletedAt = freezed,
     Object? emailMe = freezed,
     Object? keep_me_sign_in = freezed,
+    Object? method_sign_in = freezed,
+    Object? address = freezed,
   }) {
     return _then(_$UserEntitiesImpl(
       uuid: freezed == uuid
@@ -261,6 +281,14 @@ class __$$UserEntitiesImplCopyWithImpl<$Res>
           ? _value.keep_me_sign_in
           : keep_me_sign_in // ignore: cast_nullable_to_non_nullable
               as bool?,
+      method_sign_in: freezed == method_sign_in
+          ? _value.method_sign_in
+          : method_sign_in // ignore: cast_nullable_to_non_nullable
+              as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -281,7 +309,9 @@ class _$UserEntitiesImpl implements _UserEntities {
       @JsonKey(name: 'updated_at') this.updatedAt,
       @JsonKey(name: 'deleted_at') this.deletedAt,
       @JsonKey(name: 'email_me') this.emailMe,
-      @JsonKey(name: 'keep_me_sign_in') this.keep_me_sign_in});
+      @JsonKey(name: 'keep_me_sign_in') this.keep_me_sign_in,
+      @JsonKey(name: 'method_sign_in') this.method_sign_in,
+      @JsonKey(name: 'address') this.address});
 
   factory _$UserEntitiesImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserEntitiesImplFromJson(json);
@@ -325,10 +355,16 @@ class _$UserEntitiesImpl implements _UserEntities {
   @override
   @JsonKey(name: 'keep_me_sign_in')
   final bool? keep_me_sign_in;
+  @override
+  @JsonKey(name: 'method_sign_in')
+  final String? method_sign_in;
+  @override
+  @JsonKey(name: 'address')
+  final String? address;
 
   @override
   String toString() {
-    return 'UserEntities(uuid: $uuid, email: $email, username: $username, isActive: $isActive, firstName: $firstName, lastName: $lastName, avatarUrl: $avatarUrl, phoneNumber: $phoneNumber, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, emailMe: $emailMe, keep_me_sign_in: $keep_me_sign_in)';
+    return 'UserEntities(uuid: $uuid, email: $email, username: $username, isActive: $isActive, firstName: $firstName, lastName: $lastName, avatarUrl: $avatarUrl, phoneNumber: $phoneNumber, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, emailMe: $emailMe, keep_me_sign_in: $keep_me_sign_in, method_sign_in: $method_sign_in, address: $address)';
   }
 
   @override
@@ -358,7 +394,10 @@ class _$UserEntitiesImpl implements _UserEntities {
                 other.deletedAt == deletedAt) &&
             (identical(other.emailMe, emailMe) || other.emailMe == emailMe) &&
             (identical(other.keep_me_sign_in, keep_me_sign_in) ||
-                other.keep_me_sign_in == keep_me_sign_in));
+                other.keep_me_sign_in == keep_me_sign_in) &&
+            (identical(other.method_sign_in, method_sign_in) ||
+                other.method_sign_in == method_sign_in) &&
+            (identical(other.address, address) || other.address == address));
   }
 
   @JsonKey(ignore: true)
@@ -377,7 +416,9 @@ class _$UserEntitiesImpl implements _UserEntities {
       updatedAt,
       deletedAt,
       emailMe,
-      keep_me_sign_in);
+      keep_me_sign_in,
+      method_sign_in,
+      address);
 
   @JsonKey(ignore: true)
   @override
@@ -395,20 +436,21 @@ class _$UserEntitiesImpl implements _UserEntities {
 
 abstract class _UserEntities implements UserEntities {
   const factory _UserEntities(
-          {@JsonKey(name: 'uuid') final String? uuid,
-          @JsonKey(name: 'email') final String? email,
-          @JsonKey(name: 'username') final String? username,
-          @JsonKey(name: 'is_active') final bool? isActive,
-          @JsonKey(name: 'first_name') final String? firstName,
-          @JsonKey(name: 'last_name') final String? lastName,
-          @JsonKey(name: 'avatar_url') final String? avatarUrl,
-          @JsonKey(name: 'phone_number') final String? phoneNumber,
-          @JsonKey(name: 'created_at') final int? createdAt,
-          @JsonKey(name: 'updated_at') final int? updatedAt,
-          @JsonKey(name: 'deleted_at') final int? deletedAt,
-          @JsonKey(name: 'email_me') final bool? emailMe,
-          @JsonKey(name: 'keep_me_sign_in') final bool? keep_me_sign_in}) =
-      _$UserEntitiesImpl;
+      {@JsonKey(name: 'uuid') final String? uuid,
+      @JsonKey(name: 'email') final String? email,
+      @JsonKey(name: 'username') final String? username,
+      @JsonKey(name: 'is_active') final bool? isActive,
+      @JsonKey(name: 'first_name') final String? firstName,
+      @JsonKey(name: 'last_name') final String? lastName,
+      @JsonKey(name: 'avatar_url') final String? avatarUrl,
+      @JsonKey(name: 'phone_number') final String? phoneNumber,
+      @JsonKey(name: 'created_at') final int? createdAt,
+      @JsonKey(name: 'updated_at') final int? updatedAt,
+      @JsonKey(name: 'deleted_at') final int? deletedAt,
+      @JsonKey(name: 'email_me') final bool? emailMe,
+      @JsonKey(name: 'keep_me_sign_in') final bool? keep_me_sign_in,
+      @JsonKey(name: 'method_sign_in') final String? method_sign_in,
+      @JsonKey(name: 'address') final String? address}) = _$UserEntitiesImpl;
 
   factory _UserEntities.fromJson(Map<String, dynamic> json) =
       _$UserEntitiesImpl.fromJson;
@@ -452,6 +494,12 @@ abstract class _UserEntities implements UserEntities {
   @override
   @JsonKey(name: 'keep_me_sign_in')
   bool? get keep_me_sign_in;
+  @override
+  @JsonKey(name: 'method_sign_in')
+  String? get method_sign_in;
+  @override
+  @JsonKey(name: 'address')
+  String? get address;
   @override
   @JsonKey(ignore: true)
   _$$UserEntitiesImplCopyWith<_$UserEntitiesImpl> get copyWith =>
