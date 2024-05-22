@@ -1,3 +1,4 @@
+import 'package:auth_flutter_with_firebase/auth/auth_provider.dart';
 import 'package:auth_flutter_with_firebase/auth/onboardings/onboarding.dart';
 import 'package:auth_flutter_with_firebase/auth/sign_in/sign_in_view.dart';
 import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_process.dart';
@@ -7,6 +8,7 @@ import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_upload_image.dar
 import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_verify_code.dart';
 import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_view.dart';
 import 'package:auth_flutter_with_firebase/helpers/Const.dart';
+import 'package:auth_flutter_with_firebase/pages/home/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -45,6 +47,7 @@ void main() async {
           GetPage(
               name: AppRouters.signUpSuccessfully,
               page: () => const AuthSuccessfully()),
+          GetPage(name: AppRouters.home, page: () => HomeView()),
         ],
       ),
     ),
@@ -84,18 +87,19 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends ConsumerState<MyHomePage> {
   @override
   void initState() {
     super.initState();
     initialization();
+    ref.read(authControllerProvider.notifier).checkProfile();
   }
 
   void initialization() async {

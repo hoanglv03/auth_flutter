@@ -17,7 +17,6 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:image_picker/image_picker.dart';
@@ -66,6 +65,22 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
     } else if (_passwordControllerSighUp.text.length < 6) {
       message = "Password contains minimum 7 characters";
     } else if (!isPasswordCompliant(_passwordControllerSighUp.text)) {
+      message =
+          "Password should contain at least one number, one lowercase, one uppercase and one special character";
+    } else {
+      return true;
+    }
+    EasyLoading.showToast(message);
+    return false;
+  }
+
+  bool validateFormSignIn() {
+    String? message;
+    if (!EmailValidator.validate(_emailController.text)) {
+      message = "Email is valid";
+    } else if (_passwordController.text.length < 6) {
+      message = "Password contains minimum 7 characters";
+    } else if (!isPasswordCompliant(_passwordController.text)) {
       message =
           "Password should contain at least one number, one lowercase, one uppercase and one special character";
     } else {
@@ -125,8 +140,6 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
     }
   }
 
-  Future<void> checkStepSignIn(String email, String password) async {}
-
   Future<UserCredential> signInWithFacebook() async {
     final LoginResult result = await FacebookAuth.instance.login();
 
@@ -154,7 +167,7 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
     });
   }
 
-  Future<UserCredential> signInWithGoogle() async {
+  Future<void> signInWithGoogle() async {
     // Trigger the authentication flow
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
@@ -168,16 +181,46 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
       idToken: googleAuth?.idToken,
     );
 
-    return await FirebaseAuth.instance
-        .signInWithCredential(credential)
-        .then((value) {
-      String? email = value.user?.email;
-      // if (email != null) {
-      //   state = state?.copyWith(email: email);
-      //   Get.to(() => HomeView());
-      // }
-      return value;
-    });
+    try {
+      return await FirebaseAuth.instance
+          .signInWithCredential(credential)
+          .then((value) async {
+        String? uuid = value.user?.uid;
+        if (uuid != null) {
+          final UserEntities user = UserEntities(
+            avatarUrl: null,
+            uuid: uuid,
+            username: null,
+            email: value.user!.email,
+            isActive: false,
+            firstName: null,
+            lastName: null,
+            createdAt: DateTime.now().millisecondsSinceEpoch,
+            phoneNumber: null,
+            updatedAt: null,
+            deletedAt: null,
+            emailMe: true,
+            keep_me_sign_in: true,
+            method_sign_in: MethodSignUp.google.name,
+            address: null,
+          );
+          await db.collection("users").doc(uuid).set(user.toJson()).then(
+                (value) => {
+                  EasyLoading.dismiss(),
+                  Get.toNamed(AppRouters.signUpProcess)
+                },
+              );
+        }
+      }).catchError((e) => EasyLoading.showToast(e?.message));
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        EasyLoading.showToast('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        EasyLoading.showToast('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> updateProfile() async {
@@ -305,6 +348,10 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
   }
 
   Future<void> handleSaveLocation() async {
+    if (ref.read(setLocationProvider) == null) {
+      EasyLoading.showToast("Please set location");
+      return;
+    }
     EasyLoading.show(status: 'loading...');
     try {
       final user = FirebaseAuth.instance.currentUser;
@@ -313,7 +360,7 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
           "address": ref.read(setLocationProvider),
         }).then((value) async {
           EasyLoading.showToast("Updated location successfully");
-          await sendCode()
+          await sendCode(null)
               .then((value) => {Get.toNamed(AppRouters.signUpVerifyCode)});
         }).catchError((e) {
           if (e.code == 'not-found') {
@@ -326,17 +373,37 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
     }
   }
 
-  Future<void> sendCode() async {
+  Future<void> sendCode(bool? resend) async {
+    String? phoneNumberSend;
     try {
+      if (phoneNumber == null) {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null) {
+          final userGetFromDatabase = db.collection("users").doc(user.uid);
+          await userGetFromDatabase.get().then(
+            (DocumentSnapshot doc) {
+              final data =
+                  UserEntities.fromJson(doc.data() as Map<String, dynamic>);
+              phoneNumberSend = data.phoneNumber;
+            },
+            onError: (e) => print("Error getting document: $e"),
+          );
+        }
+      } else {
+        phoneNumberSend = phoneNumber;
+      }
       await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: phoneNumber?.replaceFirst("0", "+84"),
+        phoneNumber: phoneNumberSend?.replaceFirst("0", "+84"),
         verificationCompleted: (PhoneAuthCredential credential) {},
+        timeout: const Duration(seconds: 60),
         verificationFailed: (FirebaseAuthException e) {
           print(e);
         },
         codeSent: (String verificationId, int? resendToken) async {
           _verificationId = verificationId;
-          Get.toNamed(AppRouters.signUpVerifyCode);
+          if (resend == null) {
+            Get.toNamed(AppRouters.signUpVerifyCode);
+          }
         },
         codeAutoRetrievalTimeout: (String verificationId) {},
       );
@@ -346,33 +413,112 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
   }
 
   Future<void> resendCode() async {
+    sendCode(true);
+  }
+
+  Future<void> verifyCode(String code) async {
+    EasyLoading.show(status: 'loading...');
     try {
-      await FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: phoneNumber?.replaceFirst("0", "+84"),
-        verificationCompleted: (PhoneAuthCredential credential) {},
-        verificationFailed: (FirebaseAuthException e) {
-          print(e);
+      if (code.length == 6) {
+        PhoneAuthCredential credential = PhoneAuthProvider.credential(
+            verificationId: _verificationId, smsCode: code);
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null) {
+          await user.updatePhoneNumber(credential);
+        }
+        Get.replace(AppRouters.signUpSuccessfully);
+      }
+    } catch (e) {
+      print(e);
+    }
+    EasyLoading.dismiss();
+  }
+
+  Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
+    Get.offAllNamed(AppRouters.signIn);
+  }
+
+  Future<void> checkStepSignIn(UserCredential credential) async {
+    try {
+      final uuid = credential.user?.uid;
+      final user = db.collection("users").doc(uuid);
+      user.get().then(
+        (DocumentSnapshot doc) async {
+          final data =
+              UserEntities.fromJson(doc.data() as Map<String, dynamic>);
+          if (data.firstName == null) {
+            Get.toNamed(AppRouters.signUpProcess);
+          } else if (data.avatarUrl == null) {
+            Get.toNamed(AppRouters.signUploadImage);
+          } else if (data.address == null) {
+            Get.toNamed(AppRouters.signUpSetLocation);
+          } else if (credential.user?.phoneNumber == null) {
+            await sendCode(null)
+                .then((value) => Get.toNamed(AppRouters.signUpVerifyCode));
+          } else {
+            Get.offAllNamed(AppRouters.home);
+          }
         },
-        codeSent: (String verificationId, int? resendToken) async {
-          _verificationId = verificationId;
-        },
-        codeAutoRetrievalTimeout: (String verificationId) {},
+        onError: (e) => print("Error getting document: $e"),
       );
     } catch (e) {
       print(e);
     }
   }
 
-  Future<void> verifyCode(String code) async {
-    if (code.length == 6) {
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: _verificationId, smsCode: code);
-      Get.toNamed(AppRouters.signUpSuccessfully);
-    }
+  Future<void> checkProfile() async {
+    try {
+      final userLocal = FirebaseAuth.instance.currentUser;
+      if (userLocal != null) {
+        final uuid = userLocal.uid;
+        final user = db.collection("users").doc(uuid);
+        user.get().then(
+          (DocumentSnapshot doc) async {
+            final data =
+                UserEntities.fromJson(doc.data() as Map<String, dynamic>);
+            if (data.firstName == null) {
+              Get.toNamed(AppRouters.signUpProcess);
+            } else if (data.avatarUrl == null) {
+              Get.toNamed(AppRouters.signUploadImage);
+            } else if (data.address == null) {
+              Get.toNamed(AppRouters.signUpSetLocation);
+            } else if (userLocal.phoneNumber == null) {
+              await sendCode(null)
+                  .then((value) => Get.toNamed(AppRouters.signUpVerifyCode));
+            } else {
+              Get.offAllNamed(AppRouters.home);
+            }
+          },
+          onError: (e) => print("Error getting document: $e"),
+        );
+      }
+    } catch (e) {}
   }
 
-  Future<void> signOut() async {
-    await FirebaseAuth.instance.signOut();
+  Future<void> signIn() async {
+    try {
+      EasyLoading.show(status: 'loading...');
+      if (!validateFormSignIn()) {
+        return;
+      }
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      String? uuid = credential.user?.uid;
+      if (uuid != null) {
+        checkStepSignIn(credential);
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+      print(e.message);
+    }
+    EasyLoading.dismiss();
   }
 
   TextEditingController getEmailControllerSignUp() {

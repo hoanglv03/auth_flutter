@@ -3,10 +3,7 @@ import 'package:auth_flutter_with_firebase/auth/controllers/auth_set_location.da
 import 'package:auth_flutter_with_firebase/components/background.dart';
 import 'package:auth_flutter_with_firebase/components/button_gradient.dart';
 import 'package:auth_flutter_with_firebase/helpers/Const.dart';
-import 'package:auth_flutter_with_firebase/helpers/helper.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 

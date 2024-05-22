@@ -101,7 +101,8 @@ class _SignInViewState extends ConsumerState<SignInView> {
                         )),
                     ButtonGradient(
                       textButton: "Login",
-                      onPressed: () => {},
+                      onPressed: () =>
+                          {ref.read(authControllerProvider.notifier).signIn()},
                       width: 157,
                       height: 57,
                     )

@@ -3,6 +3,7 @@ import 'package:auth_flutter_with_firebase/helpers/Const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:get/get.dart';
 
 class AuthSuccessfully extends ConsumerStatefulWidget {
   const AuthSuccessfully({super.key});
@@ -54,7 +55,9 @@ class _AuthSuccessfullyState extends ConsumerState<AuthSuccessfully> {
                 ],
               ),
               ButtonGradient(
-                onPressed: () {},
+                onPressed: () {
+                  Get.offAllNamed(AppRouters.home);
+                },
                 textButton: "Try Order",
                 height: 57,
                 width: 157,

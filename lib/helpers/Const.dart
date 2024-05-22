@@ -106,6 +106,7 @@ class AppRouters {
   static const signUpSetLocation = '/sign_up_set_location';
   static const signUpVerifyCode = '/sign_up_verify_code';
   static const signUpSuccessfully = '/sign_up_successfully';
+  static const home = '/home';
 }
 
 class AppColors {
