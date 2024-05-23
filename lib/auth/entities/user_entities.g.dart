@@ -23,6 +23,7 @@ _$UserEntitiesImpl _$$UserEntitiesImplFromJson(Map<String, dynamic> json) =>
       keep_me_sign_in: json['keep_me_sign_in'] as bool?,
       method_sign_in: json['method_sign_in'] as String?,
       address: json['address'] as String?,
+      isPhoneNumberVerified: json['is_phone_number_verified'] as bool?,
     );
 
 Map<String, dynamic> _$$UserEntitiesImplToJson(_$UserEntitiesImpl instance) =>
@@ -42,4 +43,5 @@ Map<String, dynamic> _$$UserEntitiesImplToJson(_$UserEntitiesImpl instance) =>
       'keep_me_sign_in': instance.keep_me_sign_in,
       'method_sign_in': instance.method_sign_in,
       'address': instance.address,
+      'is_phone_number_verified': instance.isPhoneNumberVerified,
     };

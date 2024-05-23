@@ -38,7 +38,10 @@ class _SignUpProcessState extends ConsumerState<SignUpProcess> {
   @override
   Widget build(BuildContext context) {
     return Background(
-      onTab: () => {Get.back()},
+      onTab: () => {
+        Get.back(),
+        ref.read(authControllerProvider.notifier).signOutFirebaseAuth()
+      },
       viewBottom: Container(
         margin: const EdgeInsets.only(bottom: 30),
         child: ButtonGradient(

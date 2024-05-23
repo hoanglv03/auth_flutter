@@ -21,6 +21,7 @@ class UserEntities with _$UserEntities {
     @JsonKey(name: 'keep_me_sign_in') bool? keep_me_sign_in,
     @JsonKey(name: 'method_sign_in') String? method_sign_in,
     @JsonKey(name: 'address') String? address,
+    @JsonKey(name: 'is_phone_number_verified') bool? isPhoneNumberVerified,
   }) = _UserEntities;
 
   factory UserEntities.fromJson(Map<String, dynamic> json) =>

@@ -50,6 +50,8 @@ mixin _$UserEntities {
   String? get method_sign_in => throw _privateConstructorUsedError;
   @JsonKey(name: 'address')
   String? get address => throw _privateConstructorUsedError;
+  @JsonKey(name: 'is_phone_number_verified')
+  bool? get isPhoneNumberVerified => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -78,7 +80,8 @@ abstract class $UserEntitiesCopyWith<$Res> {
       @JsonKey(name: 'email_me') bool? emailMe,
       @JsonKey(name: 'keep_me_sign_in') bool? keep_me_sign_in,
       @JsonKey(name: 'method_sign_in') String? method_sign_in,
-      @JsonKey(name: 'address') String? address});
+      @JsonKey(name: 'address') String? address,
+      @JsonKey(name: 'is_phone_number_verified') bool? isPhoneNumberVerified});
 }
 
 /// @nodoc
@@ -109,6 +112,7 @@ class _$UserEntitiesCopyWithImpl<$Res, $Val extends UserEntities>
     Object? keep_me_sign_in = freezed,
     Object? method_sign_in = freezed,
     Object? address = freezed,
+    Object? isPhoneNumberVerified = freezed,
   }) {
     return _then(_value.copyWith(
       uuid: freezed == uuid
@@ -171,6 +175,10 @@ class _$UserEntitiesCopyWithImpl<$Res, $Val extends UserEntities>
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
               as String?,
+      isPhoneNumberVerified: freezed == isPhoneNumberVerified
+          ? _value.isPhoneNumberVerified
+          : isPhoneNumberVerified // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ) as $Val);
   }
 }
@@ -198,7 +206,8 @@ abstract class _$$UserEntitiesImplCopyWith<$Res>
       @JsonKey(name: 'email_me') bool? emailMe,
       @JsonKey(name: 'keep_me_sign_in') bool? keep_me_sign_in,
       @JsonKey(name: 'method_sign_in') String? method_sign_in,
-      @JsonKey(name: 'address') String? address});
+      @JsonKey(name: 'address') String? address,
+      @JsonKey(name: 'is_phone_number_verified') bool? isPhoneNumberVerified});
 }
 
 /// @nodoc
@@ -227,6 +236,7 @@ class __$$UserEntitiesImplCopyWithImpl<$Res>
     Object? keep_me_sign_in = freezed,
     Object? method_sign_in = freezed,
     Object? address = freezed,
+    Object? isPhoneNumberVerified = freezed,
   }) {
     return _then(_$UserEntitiesImpl(
       uuid: freezed == uuid
@@ -289,6 +299,10 @@ class __$$UserEntitiesImplCopyWithImpl<$Res>
           ? _value.address
           : address // ignore: cast_nullable_to_non_nullable
               as String?,
+      isPhoneNumberVerified: freezed == isPhoneNumberVerified
+          ? _value.isPhoneNumberVerified
+          : isPhoneNumberVerified // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ));
   }
 }
@@ -311,7 +325,8 @@ class _$UserEntitiesImpl implements _UserEntities {
       @JsonKey(name: 'email_me') this.emailMe,
       @JsonKey(name: 'keep_me_sign_in') this.keep_me_sign_in,
       @JsonKey(name: 'method_sign_in') this.method_sign_in,
-      @JsonKey(name: 'address') this.address});
+      @JsonKey(name: 'address') this.address,
+      @JsonKey(name: 'is_phone_number_verified') this.isPhoneNumberVerified});
 
   factory _$UserEntitiesImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserEntitiesImplFromJson(json);
@@ -361,10 +376,13 @@ class _$UserEntitiesImpl implements _UserEntities {
   @override
   @JsonKey(name: 'address')
   final String? address;
+  @override
+  @JsonKey(name: 'is_phone_number_verified')
+  final bool? isPhoneNumberVerified;
 
   @override
   String toString() {
-    return 'UserEntities(uuid: $uuid, email: $email, username: $username, isActive: $isActive, firstName: $firstName, lastName: $lastName, avatarUrl: $avatarUrl, phoneNumber: $phoneNumber, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, emailMe: $emailMe, keep_me_sign_in: $keep_me_sign_in, method_sign_in: $method_sign_in, address: $address)';
+    return 'UserEntities(uuid: $uuid, email: $email, username: $username, isActive: $isActive, firstName: $firstName, lastName: $lastName, avatarUrl: $avatarUrl, phoneNumber: $phoneNumber, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, emailMe: $emailMe, keep_me_sign_in: $keep_me_sign_in, method_sign_in: $method_sign_in, address: $address, isPhoneNumberVerified: $isPhoneNumberVerified)';
   }
 
   @override
@@ -397,7 +415,9 @@ class _$UserEntitiesImpl implements _UserEntities {
                 other.keep_me_sign_in == keep_me_sign_in) &&
             (identical(other.method_sign_in, method_sign_in) ||
                 other.method_sign_in == method_sign_in) &&
-            (identical(other.address, address) || other.address == address));
+            (identical(other.address, address) || other.address == address) &&
+            (identical(other.isPhoneNumberVerified, isPhoneNumberVerified) ||
+                other.isPhoneNumberVerified == isPhoneNumberVerified));
   }
 
   @JsonKey(ignore: true)
@@ -418,7 +438,8 @@ class _$UserEntitiesImpl implements _UserEntities {
       emailMe,
       keep_me_sign_in,
       method_sign_in,
-      address);
+      address,
+      isPhoneNumberVerified);
 
   @JsonKey(ignore: true)
   @override
@@ -450,7 +471,9 @@ abstract class _UserEntities implements UserEntities {
       @JsonKey(name: 'email_me') final bool? emailMe,
       @JsonKey(name: 'keep_me_sign_in') final bool? keep_me_sign_in,
       @JsonKey(name: 'method_sign_in') final String? method_sign_in,
-      @JsonKey(name: 'address') final String? address}) = _$UserEntitiesImpl;
+      @JsonKey(name: 'address') final String? address,
+      @JsonKey(name: 'is_phone_number_verified')
+      final bool? isPhoneNumberVerified}) = _$UserEntitiesImpl;
 
   factory _UserEntities.fromJson(Map<String, dynamic> json) =
       _$UserEntitiesImpl.fromJson;
@@ -500,6 +523,9 @@ abstract class _UserEntities implements UserEntities {
   @override
   @JsonKey(name: 'address')
   String? get address;
+  @override
+  @JsonKey(name: 'is_phone_number_verified')
+  bool? get isPhoneNumberVerified;
   @override
   @JsonKey(ignore: true)
   _$$UserEntitiesImplCopyWith<_$UserEntitiesImpl> get copyWith =>

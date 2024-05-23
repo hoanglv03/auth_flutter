@@ -125,7 +125,7 @@ class _SignUpState extends ConsumerState<SignUp> {
                       },
                     ),
                     const SizedBox(
-                      height: 40,
+                      height: 30,
                     ),
                     ButtonGradient(
                       textButton: "Create Account",

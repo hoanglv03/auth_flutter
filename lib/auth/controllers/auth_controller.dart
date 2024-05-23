@@ -120,6 +120,7 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
             keep_me_sign_in: ref.read(keepMeSignInControllerProvider),
             method_sign_in: MethodSignUp.email.name,
             address: null,
+            isPhoneNumberVerified: null,
           );
           await db.collection("users").doc(uuid).set(user.toJson()).then(
                 (value) => {
@@ -140,31 +141,60 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
     }
   }
 
-  Future<UserCredential> signInWithFacebook() async {
+  Future<void> signInWithFacebook() async {
     final LoginResult result = await FacebookAuth.instance.login();
 
     // final OAuthCredential credential =
     //     FacebookAuthProvider.credential(result.accessToken!.token);
     final OAuthCredential credential = FacebookAuthProvider.credential(
-        "EAALJc0tqDSsBOzZB7Mm1zC0OfuSc8eZCoJPP3ZBVIS1FZCHk0KP3gamiYx8RPnnuZAC7TEk1ZCZBNZB0rweNyeLEKwk8PkcUlfd7PTGnyaMXIa1lSZCLC49jBJHcn2LR5J8MBXaHO455Nkkz2QyWgHjYRl869At5s9xINMWEZAVzlqZAB0ijEyWHuUZCELCbLM7WYXgv6nHVJoMKLWpUcP2tVeCR55vd5nerA2vgj0vZAaC01NefRAqAUrmAtQfbL6TAv7gZDZD");
-    return await FirebaseAuth.instance
-        .signInWithCredential(credential)
-        .then((value) async {
-      // try {
-      //   if (value.user!.emailVerified == false) {
-      //     await value.user!.sendEmailVerification();
-      //   }
-      // } on FirebaseAuthException catch (e) {
-      //   print(e.code);
-      // } catch (e) {
-      //   print(e.toString());
-      // }
-      if (value.user?.email != null) {
-        Get.to(() => HomeView());
+        "EAALJc0tqDSsBO9hJ0AZAYucq4KRm8SegzZCwdbbZAKiviP6bxCEyzQbfrsH2xAZCv5gHli8PTzkkCwhzZC1pqfxxmuqaooTTwkf8cxdFLNWZC29etZAP27cC2Qb0cJYV0Xg0E10tgnTDxAJAACkcHgzsqW0NdPf3n2ccCLJ2XpzzXHOd0TFDIV2OOkduIJw3ZCNbKeIZCskQB0aWJGkuya53I1hUQbrI0IMoHhSz1yJ7GPrzqgZAphFXhNquBD1WpxWwZDZD");
+    try {
+      return await FirebaseAuth.instance
+          .signInWithCredential(credential)
+          .then((value) async {
+        String? uuid = value.user?.uid;
+        if (uuid != null) {
+          await db.collection("users").doc(uuid).get().then((user) async {
+            if (user.data() == null) {
+              final UserEntities user = UserEntities(
+                avatarUrl: null,
+                uuid: uuid,
+                username: null,
+                email: value.user!.email,
+                isActive: false,
+                firstName: null,
+                lastName: null,
+                createdAt: DateTime.now().millisecondsSinceEpoch,
+                phoneNumber: null,
+                updatedAt: null,
+                deletedAt: null,
+                emailMe: true,
+                keep_me_sign_in: true,
+                method_sign_in: MethodSignUp.facebook.name,
+                address: null,
+                isPhoneNumberVerified: null,
+              );
+              await db.collection("users").doc(uuid).set(user.toJson()).then(
+                    (value) => {
+                      EasyLoading.dismiss(),
+                      Get.toNamed(AppRouters.signUpProcess)
+                    },
+                  );
+            } else {
+              checkStepSignIn(value);
+            }
+          });
+        }
+      }).catchError((e) => EasyLoading.showToast(e?.message));
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        EasyLoading.showToast('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        EasyLoading.showToast('The account already exists for that email.');
       }
-
-      return value;
-    });
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> signInWithGoogle() async {
@@ -187,29 +217,36 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
           .then((value) async {
         String? uuid = value.user?.uid;
         if (uuid != null) {
-          final UserEntities user = UserEntities(
-            avatarUrl: null,
-            uuid: uuid,
-            username: null,
-            email: value.user!.email,
-            isActive: false,
-            firstName: null,
-            lastName: null,
-            createdAt: DateTime.now().millisecondsSinceEpoch,
-            phoneNumber: null,
-            updatedAt: null,
-            deletedAt: null,
-            emailMe: true,
-            keep_me_sign_in: true,
-            method_sign_in: MethodSignUp.google.name,
-            address: null,
-          );
-          await db.collection("users").doc(uuid).set(user.toJson()).then(
-                (value) => {
-                  EasyLoading.dismiss(),
-                  Get.toNamed(AppRouters.signUpProcess)
-                },
+          await db.collection("users").doc(uuid).get().then((user) async {
+            if (user.data() == null) {
+              final UserEntities user = UserEntities(
+                avatarUrl: null,
+                uuid: uuid,
+                username: null,
+                email: value.user!.email,
+                isActive: false,
+                firstName: null,
+                lastName: null,
+                createdAt: DateTime.now().millisecondsSinceEpoch,
+                phoneNumber: null,
+                updatedAt: null,
+                deletedAt: null,
+                emailMe: true,
+                keep_me_sign_in: true,
+                method_sign_in: MethodSignUp.google.name,
+                address: null,
+                isPhoneNumberVerified: null,
               );
+              await db.collection("users").doc(uuid).set(user.toJson()).then(
+                    (value) => {
+                      EasyLoading.dismiss(),
+                      Get.toNamed(AppRouters.signUpProcess)
+                    },
+                  );
+            } else {
+              checkStepSignIn(value);
+            }
+          });
         }
       }).catchError((e) => EasyLoading.showToast(e?.message));
     } on FirebaseAuthException catch (e) {
@@ -251,6 +288,7 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
           "first_name": _firstNameController.text,
           "last_name": _lastNameController.text,
           "phone_number": _phoneNumberController.text,
+          "is_email_verified": false
         }).then((value) {
           phoneNumber = _phoneNumberController.text;
           EasyLoading.showToast("Updated profile successfully");
@@ -425,8 +463,12 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
         final user = FirebaseAuth.instance.currentUser;
         if (user != null) {
           await user.updatePhoneNumber(credential);
+          await db
+              .collection("users")
+              .doc(user.uid)
+              .update({"is_email_verified": true});
         }
-        Get.replace(AppRouters.signUpSuccessfully);
+        Get.offAllNamed(AppRouters.signUpSuccessfully);
       }
     } catch (e) {
       print(e);
@@ -437,6 +479,10 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
   Future<void> signOut() async {
     await FirebaseAuth.instance.signOut();
     Get.offAllNamed(AppRouters.signIn);
+  }
+
+  Future<void> signOutFirebaseAuth() async {
+    await FirebaseAuth.instance.signOut();
   }
 
   Future<void> checkStepSignIn(UserCredential credential) async {
@@ -453,7 +499,7 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
             Get.toNamed(AppRouters.signUploadImage);
           } else if (data.address == null) {
             Get.toNamed(AppRouters.signUpSetLocation);
-          } else if (credential.user?.phoneNumber == null) {
+          } else if (data.isPhoneNumberVerified == false) {
             await sendCode(null)
                 .then((value) => Get.toNamed(AppRouters.signUpVerifyCode));
           } else {
@@ -483,7 +529,7 @@ class AuthControllerNotifier extends StateNotifier<UserEntities?> {
               Get.toNamed(AppRouters.signUploadImage);
             } else if (data.address == null) {
               Get.toNamed(AppRouters.signUpSetLocation);
-            } else if (userLocal.phoneNumber == null) {
+            } else if (data.isPhoneNumberVerified == false) {
               await sendCode(null)
                   .then((value) => Get.toNamed(AppRouters.signUpVerifyCode));
             } else {
