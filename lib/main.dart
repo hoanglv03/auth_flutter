@@ -9,6 +9,7 @@ import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_verify_code.dart
 import 'package:auth_flutter_with_firebase/auth/sign_up/sign_up_view.dart';
 import 'package:auth_flutter_with_firebase/helpers/Const.dart';
 import 'package:auth_flutter_with_firebase/pages/home/home_view.dart';
+import 'package:auth_flutter_with_firebase/pages/main_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -47,7 +48,7 @@ void main() async {
           GetPage(
               name: AppRouters.signUpSuccessfully,
               page: () => const AuthSuccessfully()),
-          GetPage(name: AppRouters.home, page: () => HomeView()),
+          GetPage(name: AppRouters.home, page: () => const MainBottomBar()),
         ],
       ),
     ),

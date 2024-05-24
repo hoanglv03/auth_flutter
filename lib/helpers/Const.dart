@@ -14,7 +14,18 @@ class AppImage {
   static const camera = 'lib/assets/icons/camera.png';
   static const gallery = 'lib/assets/icons/gallery.png';
   static const pin = 'lib/assets/icons/pin.png';
-  static const icon_successfully = 'lib/assets/icons/icon_successfully.png';
+  static const iconSuccessfully = 'lib/assets/icons/icon_successfully.png';
+  static const iconNotification = 'lib/assets/icons/icon_notification.png';
+  static const iconHomeActive = 'lib/assets/icons/icon_home_active.png';
+  static const iconHomeInactive = 'lib/assets/icons/icon_home_inactive.png';
+  static const iconCartActive = 'lib/assets/icons/icon_cart_active.png';
+  static const iconCartInactive = 'lib/assets/icons/icon_cart_inactive.png';
+  static const iconChatActive = 'lib/assets/icons/icon_chat_active.png';
+  static const iconChatInActive = 'lib/assets/icons/icon_chat_inactive.png';
+  static const iconProfileActive = 'lib/assets/icons/icon_profile_active.png';
+  static const iconProfileInactive =
+      'lib/assets/icons/icon_profile_inactive.png';
+  static const backgroundHeader = "lib/assets/images/background_header.png";
 }
 
 class AppTextStyle {
@@ -96,6 +107,11 @@ class AppTextStyle {
     fontSize: 23,
     fontWeight: FontWeight.bold,
   );
+  static const bold31 = TextStyle(
+    color: Colors.black,
+    fontSize: 31,
+    fontWeight: FontWeight.w800,
+  );
 }
 
 class AppRouters {
@@ -114,6 +130,7 @@ class AppColors {
   static const buttonArrow = Color(0xffDA6317);
   static const white80 = Color(0xffFEFEFF);
   static final Color white50 = white80.withOpacity(0.5);
+  static const black = Colors.black;
 }
 
 class AppAuthText {
@@ -139,4 +156,8 @@ class AppAuthText {
   static const readyToUse = "Your Profile Is Ready To Use";
   static const resendAfter = "Resend after";
   static const resend = "Resend";
+}
+
+class AppHomeText {
+  static const findYourFavoriteFood = "Find Your\nFavorite Food";
 }

@@ -53,6 +53,7 @@ dependencies:
   geolocator: ^11.0.0
   geocoding: ^3.0.0
   pin_code_fields: ^8.0.1
+  persistent_bottom_nav_bar_v2: ^5.2.3
 
 dev_dependencies:
   flutter_test:
@@ -95,6 +96,16 @@ flutter:
     - lib/assets/icons/gallery.png
     - lib/assets/icons/pin.png
     - lib/assets/icons/icon_successfully.png
+    - lib/assets/icons/icon_notification.png
+    - lib/assets/icons/icon_chat_inactive.png
+    - lib/assets/icons/icon_chat_active.png
+    - lib/assets/icons/icon_home_inactive.png
+    - lib/assets/icons/icon_home_active.png
+    - lib/assets/icons/icon_profile_inactive.png
+    - lib/assets/icons/icon_profile_active.png
+    - lib/assets/icons/icon_cart_active.png
+    - lib/assets/icons/icon_cart_inactive.png
+    - lib/assets/images/background_header.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

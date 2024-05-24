@@ -38,7 +38,7 @@ class _AuthSuccessfullyState extends ConsumerState<AuthSuccessfully> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Image.asset(
-                    AppImage.icon_successfully,
+                    AppImage.iconSuccessfully,
                     scale: 0.8,
                   ),
                   Text(
